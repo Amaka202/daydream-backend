@@ -1,0 +1,38 @@
+{
+  "name": "daydream-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test-init": "node_modules/jasmine/bin/jasmine.js init",
+    "test": "node_modules/jasmine/bin/jasmine.js",
+    "migrate": "node ./migrations/main.js",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amaka202/daydream-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Amaka202/daydream-backend/issues"
+  },
+  "homepage": "https://github.com/Amaka202/daydream-backend#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.5.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "jasmine": "^3.6.4"
+  }
+}
