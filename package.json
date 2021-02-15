@@ -8,8 +8,8 @@
     "test": "node_modules/jasmine/bin/jasmine.js",
     "build": "babel server.js --out-dir build",
     "dev-start": "babel-watch server.js",
-    "migrate": "node ./migrations/main.js",
-    "start": "nodemon server.js"
+    "migrate": "node ./src/migrations/main.js",
+    "start": "babel-watch server.js"
   },
   "repository": {
     "type": "git",
