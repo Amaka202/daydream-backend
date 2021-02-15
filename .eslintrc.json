@@ -14,6 +14,6 @@
         "linebreak-style":"off",
         "no-console":"off",
         "eol-last":"off",
-        "comma-dangle":"off"
+        "comma-dangle":"off"            
     }
 }

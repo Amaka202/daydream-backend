@@ -6,8 +6,10 @@
   "scripts": {
     "test-init": "node_modules/jasmine/bin/jasmine.js init",
     "test": "node_modules/jasmine/bin/jasmine.js",
+    "build": "babel server.js --out-dir build",
+    "dev-start": "babel-watch server.js",
     "migrate": "node ./migrations/main.js",
-    "start": "nodemon app.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,8 @@
   },
   "homepage": "https://github.com/Amaka202/daydream-backend#readme",
   "dependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/preset-env": "^7.12.16",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -30,6 +34,9 @@
     "pg": "^8.5.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-watch": "^7.4.0",
     "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
