@@ -20,7 +20,7 @@ const createEnteriesTableQuery = `
         user_id UUID NOT NULL,
         title VARCHAR NOT NULL,
         entry VARCHAR NOT NULL,
-        date VARCHAR NOT NULL,
+        date TIMESTAMP NOT NULL,
         createdat TIMESTAMP DEFAULT NOW(),
         FOREIGN KEY (user_id) REFERENCES "users" (id) ON DELETE CASCADE
     )
@@ -33,7 +33,9 @@ const createtasksTableQuery = `
     tasks(
         id UUID PRIMARY KEY NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
         user_id UUID NOT NULL,
-        task UUID NOT NULL,
+        task VARCHAR NOT NULL,
+        isdone BOOLEAN NOT NULL,
+        date TIMESTAMP NOT NULL,
         createdat TIMESTAMP DEFAULT NOW(),
         FOREIGN KEY (user_id) REFERENCES "users" (id) ON DELETE CASCADE
     )

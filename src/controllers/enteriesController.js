@@ -15,7 +15,7 @@ class Entries {
       FROM users
       INNER JOIN enteries
       ON enteries.user_id = users.id
-      ORDER BY posts.createdat DESC`);
+      ORDER BY enteries.createdat DESC`);
       return res.status(200).json({
         status: 'success',
         message: 'fetched all enteries successfully',
