@@ -1,13 +1,12 @@
-import { Router } from 'express';
+const express = require('express');
+const Entries = require('../controllers/enteriesController');
+const AuthenticateUser = require('../middleware/checkTokenFunction');
 
-import Entries from '../controllers/enteriesController';
-import checkTokenFunction from '../middleware/checkTokenFunction';
+const router = express.Router();
 
-const router = Router();
+router.get('/enteries', AuthenticateUser.checkToken, Entries.getAllEnteries);
+router.put('/enteries/:entryId/edit', AuthenticateUser.checkToken, Entries.editEntry);
+router.delete('/enteries/:entryId/delete', AuthenticateUser.checkToken, Entries.deleteEntry);
+router.post('/entry', AuthenticateUser.checkToken, Entries.createEntry);
 
-router.get('/enteries', checkTokenFunction, Entries.getAllEnteries);
-router.put('/enteries/:entryId/edit', checkTokenFunction, Entries.editEntry);
-router.delete('/enteries/:entryId/delete', checkTokenFunction, Entries.deleteEntry);
-router.post('/entry', checkTokenFunction, Entries.createEntry);
-
-export default router;
+module.exports = router;

@@ -1,10 +1,10 @@
-import { Router } from 'express';
+const express = require('express');
 
-import User from '../controllers/userController';
-import checkTokenFunction from '../middleware/checkTokenFunction';
+const User = require('../controllers/userController');
+const AuthenticateUser = require('../middleware/checkTokenFunction');
 
-const router = Router();
+const router = express.Router();
 
-router.get('/user', checkTokenFunction, User.getUser);
+router.get('/user', AuthenticateUser.checkToken, User.getUser);
 
-export default router;
+module.exports = router;

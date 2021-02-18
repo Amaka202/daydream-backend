@@ -1,24 +1,13 @@
-import express from 'express';
-
-import dotenv from 'dotenv';
-
-import 'babel-polyfill';
-
-import cors from 'cors';
-
-import { json, urlencoded } from 'body-parser';
-
-import authRoute from './src/routes/authRouth';
-
-import enteriesRoute from './src/routes/enteriesRoutes';
-
-import remindersRoute from './src/routes/remindersRoute';
-
-import userRoute from './src/routes/userRoute';
+const express = require('express');
+const cors = require('cors');
+const { json, urlencoded } = require('body-parser');
+const authRoute = require('./src/routes/authRouth');
+const enteriesRoute = require('./src/routes/enteriesRoutes');
+const remindersRoute = require('./src/routes/remindersRoute');
+const userRoute = require('./src/routes/userRoute');
+require('dotenv').config();
 
 const app = express();
-
-dotenv.config();
 
 app.use(cors());
 
@@ -36,6 +25,7 @@ app.use('/api/v1', userRoute);
 app.get('/', (req, res) => res.status(200).json({ message: 'welcome to my api' }));
 
 app.all('*', (req, res) => res.status(404).json({
+  status: 'error',
   message: 'route not found'
 }));
 

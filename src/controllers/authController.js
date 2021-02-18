@@ -1,8 +1,8 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-import db from '../database/db';
-import isValidEmail from '../helpers/helpers';
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const db = require('../database/db');
+const isValidEmail = require('../helpers/helpers');
 
 dotenv.config();
 
@@ -102,4 +102,4 @@ class Auth {
   }
 }
 
-export default Auth;
+module.exports = Auth;
