@@ -1,4 +1,4 @@
-import db from '../database/db';
+const db = require('../database/db');
 
 class Entries {
   /**
@@ -9,17 +9,20 @@ class Entries {
    * */
 
   static async getAllEnteries(req, res, next) {
+    const { id: userId } = req.user;
     try {
-      const result = await db.query(`
-      SELECT users.firstname, enteries.id, enteries.title, enteries.entry, enteries.date, enteries.createdat
+      let result = await db.query(`
+      SELECT users.firstname,  enteries.id, enteries.user_id, enteries.title, enteries.entry, enteries.date, enteries.createdat
       FROM users
       INNER JOIN enteries
       ON enteries.user_id = users.id
       ORDER BY enteries.createdat DESC`);
+
+      result = await result.rows.filter((val) => val.user_id === userId);
       return res.status(200).json({
         status: 'success',
         message: 'fetched all enteries successfully',
-        data: result.rows
+        data: result
       });
     } catch (e) {
       return next(e);
@@ -39,8 +42,8 @@ class Entries {
       }
 
       const result = await db.query(
-        'INSERT INTO enteries (title, entry, user_id) VALUES ($1,$2,$3) RETURNING *',
-        [title, entry, userId]
+        'INSERT INTO enteries (title, entry, date, user_id) VALUES ($1,$2,$3, $4) RETURNING *',
+        [title, entry, date, userId]
       );
       return res.status(200).json({
         status: 'success',
@@ -70,7 +73,7 @@ class Entries {
       const entryToUpdate = entry || originalEntry.rows[0].entry;
       const titleToUpdate = title || originalEntry.rows[0].title;
       const result = await db.query(
-        'UPDATE enteries SET title=$1, article=$2 WHERE id=$3 RETURNING *',
+        'UPDATE enteries SET title=$1, entry=$2 WHERE id=$3 RETURNING *',
         [titleToUpdate, entryToUpdate, entryId]
       );
 
@@ -109,4 +112,4 @@ class Entries {
   }
 }
 
-export default Entries;
+module.exports = Entries;

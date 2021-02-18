@@ -1,5 +1,5 @@
-import migrate from './migrations';
-import db from '../database/db';
+const migrate = require('./migrations');
+const db = require('../database/db');
 
 async function runMigrate() {
   try {

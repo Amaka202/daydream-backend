@@ -1,4 +1,4 @@
-import db from '../database/db';
+const db = require('../database/db');
 
 class User {
   static async getUser(req, res, next) {
@@ -17,4 +17,4 @@ class User {
   }
 }
 
-export default User;
+module.exports = User;

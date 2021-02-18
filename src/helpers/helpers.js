@@ -1,3 +1,3 @@
-export const isValidEmail = (email) => {
-    return /\S+@\S+\.\S+/.test(email);
-  }
+const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
+
+module.exports = isValidEmail;

@@ -1,14 +1,14 @@
-import { Router } from 'express';
+const express = require('express');
 
-import Reminders from '../controllers/remindersControllers';
-import checkTokenFunction from '../middleware/checkTokenFunction';
+const Reminders = require('../controllers/remindersControllers');
+const AuthenticateUser = require('../middleware/checkTokenFunction');
 
-const router = Router();
+const router = express.Router();
 
-router.post('/reminder', checkTokenFunction, Reminders.createReminder);
-router.put('/reminder/:reminderId/done', checkTokenFunction, Reminders.markReminderAsDone);
-router.delete('/reminder/:reminderId/delete', checkTokenFunction, Reminders.deleteReminder);
-router.get('/donereminders', checkTokenFunction, Reminders.getDoneReminders);
-router.get('/undonereminders', checkTokenFunction, Reminders.getUnDoneReminders);
+router.post('/reminder', AuthenticateUser.checkToken, Reminders.createReminder);
+router.put('/reminder/:reminderId/done', AuthenticateUser.checkToken, Reminders.markReminderAsDone);
+router.delete('/reminder/:reminderId/delete', AuthenticateUser.checkToken, Reminders.deleteReminder);
+router.get('/donereminders', AuthenticateUser.checkToken, Reminders.getDoneReminders);
+router.get('/undonereminders', AuthenticateUser.checkToken, Reminders.getUnDoneReminders);
 
-export default router;
+module.exports = router;

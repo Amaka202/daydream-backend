@@ -1,4 +1,4 @@
-import db from '../database/db';
+const db = require('../database/db');
 
 class Reminders {
   /**
@@ -9,18 +9,22 @@ class Reminders {
    * */
 
   static async getUnDoneReminders(req, res, next) {
+    const { id: userId } = req.user;
     try {
-      const result = await db.query(`
-      SELECT users.firstname, reminders.id, reminders.reminder, reminders.isdone, reminders.date, reminders.createdat
+      let result = await db.query(`
+      SELECT users.firstname, reminders.user_id, reminders.id, reminders.reminder, reminders.isdone, reminders.date, reminders.createdat
       FROM users
       INNER JOIN reminders
       ON reminders.user_id = users.id
       WHERE isdone='FALSE'
       ORDER BY reminders.createdat DESC`);
+
+      result = await result.rows.filter((val) => val.user_id === userId);
+
       return res.status(200).json({
         status: 'success',
         message: 'fetched all reminders successfully',
-        data: result.rows
+        data: result
       });
     } catch (e) {
       return next(e);
@@ -28,18 +32,23 @@ class Reminders {
   }
 
   static async getDoneReminders(req, res, next) {
+    const { id: userId } = req.user;
+
     try {
-      const result = await db.query(`
-      SELECT users.firstname, reminders.id, reminders.reminder, reminders.isdone, reminders.date, reminders.createdat
+      let result = await db.query(`
+      SELECT users.firstname, reminders.id, reminders.user_id, reminders.reminder, reminders.isdone, reminders.date, reminders.createdat
       FROM users
       INNER JOIN reminders
       ON reminders.user_id = users.id
       WHERE isdone='TRUE'
       ORDER BY reminders.createdat DESC`);
+
+      result = await result.rows.filter((val) => val.user_id === userId);
+
       return res.status(200).json({
         status: 'success',
         message: 'fetched all reminders successfully',
-        data: result.rows
+        data: result
       });
     } catch (e) {
       return next(e);
@@ -130,4 +139,4 @@ class Reminders {
   }
 }
 
-export default Reminders;
+module.exports = Reminders;
