@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test-init": "node_modules/jasmine/bin/jasmine.js init",
-    "test": "node_modules/jasmine/bin/jasmine.js",
+    "test": "jest",
     "build": "",
     "migrate": "node ./src/migrations/main.js",
     "start": "nodemon server.js"
@@ -34,6 +34,6 @@
     "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "jasmine": "^3.6.4"
+    "jest": "^26.6.3"
   }
 }
