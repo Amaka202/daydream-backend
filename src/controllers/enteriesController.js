@@ -108,3 +108,5 @@ class Entries {
     }
   }
 }
+
+export default Entries;
