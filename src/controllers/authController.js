@@ -57,7 +57,7 @@ class Auth {
     }
   }
 
-  static async loGin(req, res, next) {
+  static async login(req, res, next) {
     const { email, password } = req.body;
 
     try {

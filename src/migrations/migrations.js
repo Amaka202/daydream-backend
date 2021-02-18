@@ -30,10 +30,10 @@ const createtasksTableQuery = `
     DROP TABLE IF EXISTS comments CASCADE;
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
     CREATE TABLE IF NOT EXISTS
-    tasks(
+    reminders(
         id UUID PRIMARY KEY NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
         user_id UUID NOT NULL,
-        task VARCHAR NOT NULL,
+        reminder VARCHAR NOT NULL,
         isdone BOOLEAN NOT NULL,
         date TIMESTAMP NOT NULL,
         createdat TIMESTAMP DEFAULT NOW(),
