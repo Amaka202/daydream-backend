@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'development') {
     password: process.env.DATABASE_PASSWORD,
     host: process.env.DATABASE_HOST,
     port: process.env.DATABASE_PORT,
-    database: process.env.TEST-DATABASE_NAME,
+    database: process.env.TEST_DATABASE_NAME,
   });
 } else {
   const connectionString = process.env.PRODUCTION_DATABASE_URL;
