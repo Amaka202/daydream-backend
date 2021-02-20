@@ -1,3 +1,7 @@
+require('dotenv').config();
+
+process.env.NODE_ENV = 'test';
+
 const request = require('supertest');
 
 const db = require('../src/database/db');
@@ -6,47 +10,211 @@ const app = require('../app');
 
 let token;
 
-beforeAll((done) => {
-  request(app)
-    .post('/api/v1/login')
-    .send({
-      email: 'amakaumeh@gmail.com',
-      password: 'password',
-    })
-    .end((err, response) => {
-      token = response.body.token; // save the token!
-      done();
-    });
-});
-
-afterEach(async () => {
-  await db.query('DELETE FROM enteries');
-});
-
-describe('GET /api/v1/enteries', () => {
-  test('It responds with an array of enteries', async () => {
-    const response = await request(app)
-      .get('/api/v1/enteries')
-      .set('Authorization', `Bearer ${token}`)
-      .then((data) => {
-        expect(data.statusCode).toBe(200);
-        expect(data.type).toBe('application/json');
-      });
-  });
-});
-
-describe('Post Endpoints', () => {
-  it('should create a new post', async () => {
-    const res = await request(app)
-      .post('/api/v1/entry')
-      .set('Authorization', `Bearer ${token}`)``
+beforeAll(async () => {
+  try {
+    const loggedInUser = await request(app)
+      .post('/api/v1/login')
       .send({
-        user_id: 1,
-        title: 'test',
-        entry: 'hey your ass better pass',
-        date: '1/2/2021'
+        email: process.env.TEST_USER_EMAIL,
+        password: process.env.TEST_USER_PASSWORD,
       });
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('post');
+    token = loggedInUser.body.token;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// afterAll(async () => {
+//   await db.query('DELETE FROM users');
+// });
+
+describe('', () => {
+  test('It does not create an entry because of lack of authorization', async () => {
+    try {
+      const entry = await request(app)
+        .post('/api/v1/entry')
+        .send({
+          title: 'Beach day',
+          entry: 'Had an awesome time at the beach'
+        });
+      expect(entry.body.message).toBe('Unauthorized');
+      expect(entry.body.message).not.toBe('Entry successfully added');
+      expect(entry.body.status).not.toBe('success');
+      expect(entry.body.status).toBe('error');
+      expect(entry.statusCode).not.toBe(200);
+      expect(entry.statusCode).toBe(403);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('It creates an entry', async () => {
+    try {
+      const entry = await request(app)
+        .post('/api/v1/entry')
+        .send({
+          title: 'Beach day',
+          entry: 'Had an awesome time at the beach',
+          date: '1/2/2021'
+        })
+        .set('Authorization', `Bearer ${token}`);
+      expect(entry.body.data).toHaveProperty('id');
+      expect(entry.body.message).toBe('Entry successfully added');
+      expect(entry.body.status).toBe('success');
+      expect(entry.body.status).not.toBe('error');
+      expect(entry.statusCode).toBe(200);
+      expect(entry.statusCode).not.toBe(400);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('It does not creates an entry because of all credentials arent provided', async () => {
+    try {
+      const entry = await request(app)
+        .post('/api/v1/entry')
+        .send({
+          title: 'Beach day',
+          entry: 'Had an awesome time at the beach'
+        })
+        .set('Authorization', `Bearer ${token}`);
+      // expect(entry.body.data).toHaveProperty('id');
+      expect(entry.body.message).toBe('All fields required');
+      expect(entry.body.status).not.toBe('success');
+      expect(entry.body.status).toBe('error');
+      expect(entry.statusCode).not.toBe(200);
+      expect(entry.statusCode).toBe(400);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('It fetches all enteries made by a user', async () => {
+    try {
+      const entry = await request(app)
+        .get('/api/v1/enteries')
+        .set('Authorization', `Bearer ${token}`);
+      expect(entry.body).toHaveProperty('status');
+      expect(entry.body.data).toBeInstanceOf(Array);
+      expect(entry.body).toHaveProperty('message');
+      expect(entry.body).toHaveProperty('data');
+      expect(entry.body.message).toBe('fetched all enteries successfully');
+      expect(entry.body.status).not.toBe('error');
+      expect(entry.body.status).toBe('success');
+      expect(entry.statusCode).not.toBe(400);
+      expect(entry.statusCode).toBe(200);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('does not fetch enteries because of lack of authorization', async () => {
+    try {
+      const entry = await request(app)
+        .get('/api/v1/enteries');
+      expect(entry.body.message).not.toBe('fetched all enteries successfully');
+      expect(entry.body.status).toBe('error');
+      expect(entry.body.status).not.toBe('success');
+      expect(entry.statusCode).toBe(403);
+      expect(entry.statusCode).not.toBe(200);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('edits an entry with an ID provided', async () => {
+    try {
+      const entry = await request(app)
+        .post('/api/v1/entry')
+        .send({
+          title: 'Beach day',
+          entry: 'Had an awesome time at the beach',
+          date: '1/2/2021'
+        })
+        .set('Authorization', `Bearer ${token}`);
+      const updatedEntry = await request(app)
+        .put(`/api/v1/enteries/${entry.body.data.id}/edit`)
+        .set('Authorization', `Bearer ${token}`);
+        // expect(entry.statusCode).toBe(403);
+      expect(updatedEntry.body.message).toBe('Entry successfully updated');
+      expect(updatedEntry.body.status).not.toBe('error');
+      expect(updatedEntry.body.status).toBe('success');
+      expect(updatedEntry.statusCode).not.toBe(401);
+      expect(updatedEntry.statusCode).toBe(200);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('does not edit an entry because no aunthorization', async () => {
+    try {
+      const entry = await request(app)
+        .post('/api/v1/entry')
+        .send({
+          title: 'Beach day',
+          entry: 'Had an awesome time at the beach',
+          date: '1/2/2021'
+        })
+        .set('Authorization', `Bearer ${token}`);
+      const updatedEntry = await request(app)
+        .put(`/api/v1/enteries/${entry.body.data.id}/edit`);
+        // expect(entry.statusCode).toBe(403);
+      expect(updatedEntry.body.message).not.toBe('Entry successfully updated');
+      expect(updatedEntry.body.message).toBe('Unauthorized');
+      expect(updatedEntry.body.status).toBe('error');
+      expect(updatedEntry.body.status).not.toBe('success');
+      expect(updatedEntry.statusCode).not.toBe(200);
+      expect(updatedEntry.statusCode).toBe(403);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('edits an entry with an ID provided', async () => {
+    try {
+      const entry = await request(app)
+        .post('/api/v1/entry')
+        .send({
+          title: 'Beach day',
+          entry: 'Had an awesome time at the beach',
+          date: '1/2/2021'
+        })
+        .set('Authorization', `Bearer ${token}`);
+      const updatedEntry = await request(app)
+        .delete(`/api/v1/enteries/${entry.body.data.id}/delete`)
+        .set('Authorization', `Bearer ${token}`);
+        // expect(entry.statusCode).toBe(403);
+      expect(updatedEntry.body.message).toBe('Entry successfully deleted');
+      expect(updatedEntry.body.status).not.toBe('error');
+      expect(updatedEntry.body.status).toBe('success');
+      expect(updatedEntry.statusCode).not.toBe(401);
+      expect(updatedEntry.statusCode).toBe(200);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('does not edit an entry because no aunthorization', async () => {
+    try {
+      const entry = await request(app)
+        .post('/api/v1/entry')
+        .send({
+          title: 'Beach day',
+          entry: 'Had an awesome time at the beach',
+          date: '1/2/2021'
+        })
+        .set('Authorization', `Bearer ${token}`);
+      const updatedEntry = await request(app)
+        .delete(`/api/v1/enteries/${entry.body.data.id}/delete`);
+        // expect(entry.statusCode).toBe(403);
+      expect(updatedEntry.body.message).not.toBe('Entry successfully updated');
+      expect(updatedEntry.body.message).toBe('Unauthorized');
+      expect(updatedEntry.body.status).toBe('error');
+      expect(updatedEntry.body.status).not.toBe('success');
+      expect(updatedEntry.statusCode).not.toBe(200);
+      expect(updatedEntry.statusCode).toBe(403);
+    } catch (err) {
+      console.log(err);
+    }
   });
 });
