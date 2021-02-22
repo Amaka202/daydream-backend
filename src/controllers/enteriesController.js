@@ -77,7 +77,7 @@ class Entries {
         'UPDATE enteries SET title=$1, entry=$2, date=$3 WHERE id=$4 RETURNING *',
         [titleToUpdate, entryToUpdate, dateToUpdate, entryId]
       );
-        console.log(result.rows[0]);
+      console.log(result.rows[0]);
       return res.status(200).json({
         status: 'success',
         message: 'Entry successfully updated',

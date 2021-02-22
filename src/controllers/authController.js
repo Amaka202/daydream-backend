@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const db = require('../database/db');
 const isValidEmail = require('../helpers/helpers');
+const { sendSignUpConfirmationMail } = require('../email-services/sendMailFunctions');
 
 dotenv.config();
 
@@ -46,6 +47,9 @@ class Auth {
         { id: result.rows[0].id },
         SECRET, { expiresIn: '30d' }
       );
+
+      sendSignUpConfirmationMail(firstname, email);
+
       return res.status(200).json({
         status: 'success',
         message: 'user sign up successful',
