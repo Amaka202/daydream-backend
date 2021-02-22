@@ -27,7 +27,7 @@ const sendTaskReminderMail = (firstname, useremail, reminder) => {
 
 const sendEntryReminderMail = (firstname, useremail) => {
   const mailData = {
-    from: 'DayDream',
+    from: process.env.NODEMAILER_AUTH_USER,
     to: useremail,
     subject: 'Reminder from Daydream!',
     text: `Hey ${firstname} Remember to record what happened today`,
@@ -41,7 +41,7 @@ const sendEntryReminderMail = (firstname, useremail) => {
 
 const sendSignUpConfirmationMail = (firstname, useremail) => {
   const mailData = {
-    from: 'DayDream',
+    from: process.env.NODEMAILER_AUTH_USER,
     to: useremail,
     subject: 'Sign Up Successful',
     text: `Welcome ${firstname}, Start writting daily!`,
