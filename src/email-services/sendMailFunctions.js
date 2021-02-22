@@ -35,7 +35,7 @@ const sendEntryReminderMail = (firstname, useremail) => {
 
   transporter.sendMail(mailData, (err, info) => {
     if (err) console.log(err);
-    else console.log(info);
+    else console.log('success', info);
   });
 };
 
