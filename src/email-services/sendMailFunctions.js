@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 const sendTaskReminderMail = (firstname, useremail, reminder) => {
   const mailData = {
-    from: 'kutegalaxy404@gmail.com',
+    from: process.env.NODEMAILER_AUTH_USER,
     to: useremail,
     subject: 'Reminder from Daydream!',
     text: `${firstname} Remember you have to do this: ${reminder}`,
