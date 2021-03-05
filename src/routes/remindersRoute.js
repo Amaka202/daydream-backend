@@ -5,10 +5,8 @@ const AuthenticateUser = require('../middleware/checkTokenFunction');
 
 const router = express.Router();
 
-router.post('/reminder', AuthenticateUser.checkToken, Reminders.createReminder);
-router.put('/reminder/:reminderId/done', AuthenticateUser.checkToken, Reminders.markReminderAsDone);
-router.delete('/reminder/:reminderId/delete', AuthenticateUser.checkToken, Reminders.deleteReminder);
-router.get('/donereminders', AuthenticateUser.checkToken, Reminders.getDoneReminders);
-router.get('/undonereminders', AuthenticateUser.checkToken, Reminders.getUnDoneReminders);
+router.post('/reminders', AuthenticateUser.checkToken, Reminders.createReminder);
+router.delete('/reminders/:reminderId/delete', AuthenticateUser.checkToken, Reminders.deleteReminder);
+router.get('/reminders', AuthenticateUser.checkToken, Reminders.getReminders);
 
 module.exports = router;
