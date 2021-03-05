@@ -54,7 +54,7 @@ class Reminders {
       return next(e);
     }
   }
-
+ 
   static async markReminderAsDone(req, res, next) {
     const { isDone } = req.body;
     const { reminderId } = req.params;
