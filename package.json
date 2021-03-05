@@ -8,7 +8,8 @@
     "test": "jest",
     "build": "",
     "migrate": "node ./src/migrations/main.js",
-    "start": "nodemon server.js"
+    "start": "cross-env NODE_ENV=production && npm run build app.js",
+    "start:dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
