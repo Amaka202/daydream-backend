@@ -13,7 +13,6 @@ class AuthenticateUser {
         const bearer = header.split(' ');
         const token = bearer[1] || req.token;
         const decodedtoken = jwt.verify(token, SECRET);
-
         if (decodedtoken) {
           req.user = decodedtoken;
           req.token = token;
