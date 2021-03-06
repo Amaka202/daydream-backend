@@ -44,7 +44,7 @@ const sendSignUpConfirmationMail = (firstname, useremail) => {
     from: process.env.NODEMAILER_AUTH_USER,
     to: useremail,
     subject: 'Sign Up Successful',
-    text: `Welcome ${firstname}, Start writting daily!`,
+    text: `Welcome ${firstname}, Start writting daily! click "https://mydaydream.netlify.app/" to start writing immediately!`,
   };
 
   transporter.sendMail(mailData, (err, info) => {

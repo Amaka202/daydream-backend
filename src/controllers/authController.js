@@ -48,7 +48,7 @@ class Auth {
         SECRET, { expiresIn: '30d' }
       );
 
-      // sendSignUpConfirmationMail(firstname, email);
+      sendSignUpConfirmationMail(firstname, email);
 
       return res.status(200).json({
         status: 'success',
