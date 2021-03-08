@@ -12,21 +12,63 @@ let token;
 
 beforeAll(async () => {
   try {
-    const loggedInUser = await request(app)
-      .post('/api/v1/login')
+    const newUser = await request(app)
+      .post('/api/v1/signup')
       .send({
         email: process.env.TEST_USER_EMAIL,
         password: process.env.TEST_USER_PASSWORD,
+        firstname: 'Amaka',
+        lastname: 'Umeh'
       });
-    token = loggedInUser.body.token;
   } catch (err) {
     console.log(err);
   }
 });
 
-// afterAll(async () => {
-//   await db.query('DELETE FROM users');
-// });
+afterAll(async () => {
+  await db.query('DELETE FROM users');
+});
+
+describe('POST /api/v1/login', () => {
+  test('It logs in a user', async () => {
+    try {
+      const loggedInUser = await request(app)
+        .post('/api/v1/login')
+        .send({
+          email: process.env.TEST_USER_EMAIL,
+          password: process.env.TEST_USER_PASSWORD,
+        });
+      token = loggedInUser.body.token;
+      console.log(token);
+      expect(loggedInUser.body).toHaveProperty('token');
+      expect(loggedInUser.body.message).toBe('sign in successful');
+      expect(loggedInUser.body.status).toBe('success');
+      expect(loggedInUser.body.status).not.toBe('error');
+      expect(loggedInUser.statusCode).toBe(200);
+      expect(loggedInUser.statusCode).not.toBe(401);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test('fails to login a user', async () => {
+    try {
+      const loggedInUser = await request(app)
+        .post('/api/v1/login')
+        .send({
+          email: process.env.TEST_USER_EMAIL
+        });
+      expect(loggedInUser.body.message).not.toBe('sign in successful');
+      expect(loggedInUser.body.message).toBe('email and password required');
+      expect(loggedInUser.statusCode).toBe(401);
+      expect(loggedInUser.statusCode).not.toBe(200);
+      expect(loggedInUser.body.status).not.toBe('success');
+      expect(loggedInUser.body.status).toBe('error');
+    } catch (err) {
+      console.log(err);
+    }
+  });
+});
 
 describe('', () => {
   test('It does not create an entry because of lack of authorization', async () => {
@@ -64,6 +106,7 @@ describe('', () => {
       expect(entry.body.status).not.toBe('error');
       expect(entry.statusCode).toBe(200);
       expect(entry.statusCode).not.toBe(400);
+      console.log("entry", entry.body.data);
     } catch (err) {
       console.log(err);
     }
