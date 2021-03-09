@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const db = require('../database/db');
 const isValidEmail = require('../helpers/helpers');
+const { sendSignUpConfirmationMail } = require('../email-services/sendMailFunctions');
 
 dotenv.config();
 
@@ -46,6 +47,9 @@ class Auth {
         { id: result.rows[0].id },
         SECRET, { expiresIn: '30d' }
       );
+
+      // sendSignUpConfirmationMail(firstname, email);
+
       return res.status(200).json({
         status: 'success',
         message: 'user sign up successful',
@@ -71,6 +75,7 @@ class Auth {
       const findByEmail = await db.query('SELECT * FROM users WHERE email=$1', [email]);
       if (!findByEmail.rows.length) {
         return res.status(401).json({
+          status: 'error',
           message: 'invalid email or password'
         });
       }
@@ -81,13 +86,14 @@ class Auth {
 
       if (hashedPassword === false) {
         return res.status(401).json({
+          status: 'error',
           message: 'invalid password'
         });
       }
 
       const token = jwt.sign(
         { email: findByEmail.rows[0].email, id: findByEmail.rows[0].id },
-        SECRET, { expiresIn: '30d' }
+        SECRET, { expiresIn: '2d' }
       );
 
       return res.status(200).json({

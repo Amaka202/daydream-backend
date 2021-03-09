@@ -7,41 +7,16 @@ class Reminders {
    *
    *  @returns { object } - reminder created
    * */
-
-  static async getUnDoneReminders(req, res, next) {
-    const { id: userId } = req.user;
-    try {
-      let result = await db.query(`
-      SELECT users.firstname, reminders.user_id, reminders.id, reminders.reminder, reminders.isdone, reminders.date, reminders.createdat
-      FROM users
-      INNER JOIN reminders
-      ON reminders.user_id = users.id
-      WHERE isdone='FALSE'
-      ORDER BY reminders.createdat DESC`);
-
-      result = await result.rows.filter((val) => val.user_id === userId);
-
-      return res.status(200).json({
-        status: 'success',
-        message: 'fetched all reminders successfully',
-        data: result
-      });
-    } catch (e) {
-      return next(e);
-    }
-  }
-
-  static async getDoneReminders(req, res, next) {
+  static async getReminders(req, res, next) {
     const { id: userId } = req.user;
 
     try {
       let result = await db.query(`
-      SELECT users.firstname, reminders.id, reminders.user_id, reminders.reminder, reminders.isdone, reminders.date, reminders.createdat
+      SELECT users.firstname, reminders.id, reminders.user_id, reminders.reminder, reminders.date, reminders.createdat
       FROM users
       INNER JOIN reminders
       ON reminders.user_id = users.id
-      WHERE isdone='TRUE'
-      ORDER BY reminders.createdat DESC`);
+      ORDER BY reminders.date`);
 
       result = await result.rows.filter((val) => val.user_id === userId);
 
@@ -58,7 +33,6 @@ class Reminders {
   static async createReminder(req, res, next) {
     const { id: userId } = req.user;
     const { reminder, date } = req.body;
-    const isDone = 'FALSE';
     try {
       if (!reminder || !date) {
         return res.status(400).json({
@@ -68,8 +42,8 @@ class Reminders {
       }
 
       const result = await db.query(
-        'INSERT INTO reminders (reminder, date, isdone, user_id) VALUES ($1,$2,$3,$4) RETURNING *',
-        [reminder, date, isDone, userId]
+        'INSERT INTO reminders (reminder, date, user_id) VALUES ($1,$2,$3) RETURNING *',
+        [reminder, date, userId]
       );
       return res.status(200).json({
         status: 'success',
@@ -80,7 +54,7 @@ class Reminders {
       return next(e);
     }
   }
-
+ 
   static async markReminderAsDone(req, res, next) {
     const { isDone } = req.body;
     const { reminderId } = req.params;
