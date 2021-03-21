@@ -1,12 +1,12 @@
 const express = require('express');
+const checkUserToken = require('../middleware/checkTokenFunction');
 
 const Reminders = require('../controllers/remindersControllers');
-const AuthenticateUser = require('../middleware/checkTokenFunction');
 
 const router = express.Router();
 
-router.post('/reminders', AuthenticateUser.checkToken, Reminders.createReminder);
-router.delete('/reminders/:reminderId/delete', AuthenticateUser.checkToken, Reminders.deleteReminder);
-router.get('/reminders', AuthenticateUser.checkToken, Reminders.getReminders);
+router.post('/reminders', checkUserToken, Reminders.createReminder);
+router.delete('/reminders/:reminderId/delete', checkUserToken, Reminders.deleteReminder);
+router.get('/reminders', checkUserToken, Reminders.getReminders);
 
 module.exports = router;

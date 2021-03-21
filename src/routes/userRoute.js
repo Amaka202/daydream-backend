@@ -1,10 +1,10 @@
 const express = require('express');
+const checkUserToken = require('../middleware/checkTokenFunction');
 
 const User = require('../controllers/userController');
-const AuthenticateUser = require('../middleware/checkTokenFunction');
 
 const router = express.Router();
 
-router.get('/user', AuthenticateUser.checkToken, User.getUser);
+router.get('/user', checkUserToken, User.getUser);
 
 module.exports = router;

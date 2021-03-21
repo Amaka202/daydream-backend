@@ -5,33 +5,36 @@ dotenv.config();
 
 const SECRET = process.env.JWT_SECRET_CODE;
 
-class AuthenticateUser {
-  static async checkToken(req, res, next) {
-    try {
-      const header = req.headers.authorization;
-      if (typeof header !== 'undefined') {
-        const bearer = header.split(' ');
-        const token = bearer[1] || req.token;
-        const decodedtoken = jwt.verify(token, SECRET);
-        if (decodedtoken) {
-          req.user = decodedtoken;
-          req.token = token;
-          return next();
-        }
-        return res.sendStatus(401).json({
-          status: 'error',
-          message: 'Invalid token',
-        });
+const UNAUTHORIZED_CODE = 401;
+
+const checkUserToken = (req, res, next) => {
+  const header = req.headers.authorization;
+  try {
+    if (typeof header !== 'undefined') {
+      const bearer = header.split(' ');
+      const token = bearer[1] || req.token;
+      const decodedToken = jwt.verify(token, SECRET);
+      if (decodedToken) {
+        req.user = decodedToken;
+        req.token = token;
+        return next();
       }
-
-      return res.status(403).json({
-        status: 'error',
-        message: 'Unauthorized'
+      return res.status(UNAUTHORIZED_CODE).json({
+        code: UNAUTHORIZED_CODE,
+        message: 'Not Authorized',
       });
-    } catch (e) {
-      return next(e);
     }
+    // if header is undefined , return bad request
+    return res.status(UNAUTHORIZED_CODE).json({
+      code: UNAUTHORIZED_CODE,
+      message: 'Not Authorized',
+    });
+  } catch (error) {
+    return res.status(UNAUTHORIZED_CODE).json({
+      code: UNAUTHORIZED_CODE,
+      message: 'Not Authorized',
+    });
   }
-}
+};
 
-module.exports = AuthenticateUser;
+module.exports = checkUserToken;

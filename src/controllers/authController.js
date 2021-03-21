@@ -45,7 +45,7 @@ class Auth {
 
       const token = jwt.sign(
         { id: result.rows[0].id },
-        SECRET, { expiresIn: '30d' }
+        SECRET, { expiresIn: '2d' }
       );
       sendSignUpConfirmationMail(firstname, email);
 
