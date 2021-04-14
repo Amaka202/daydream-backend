@@ -45,7 +45,7 @@ class Auth {
 
       const token = jwt.sign(
         { id: result.rows[0].id },
-        SECRET, { expiresIn: '30d' }
+        SECRET, { expiresIn: '60d' }
       );
 
       // sendSignUpConfirmationMail(firstname, email);
@@ -93,7 +93,7 @@ class Auth {
 
       const token = jwt.sign(
         { email: findByEmail.rows[0].email, id: findByEmail.rows[0].id },
-        SECRET, { expiresIn: '2d' }
+        SECRET, { expiresIn: '60d' }
       );
 
       return res.status(200).json({
